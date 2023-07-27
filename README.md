@@ -121,11 +121,11 @@ receive finetuning at that expanded scale.
 Presence Accuracy: 
 
 |       | IFT with Scale=4 on FFQA | IFT No scaling on FFQA | IFT with Scale=4 on AltQA | IFT No scaling on AltQA |
-|-------|--------------------------|------------------------|---------------------------|-------------------------|
+|-------:|--------------------------:|------------------------:|---------------------------:|-------------------------:|
 |  2048 |                   0.3233 |                 0.2217 |                    0.7281 |                  0.2982 |
 |  4096 |                   0.3783 |                 0.2467 |                    0.7018 |                  0.2829 |
 |  8192 |                   0.4434 |                 0.2406 |                    0.6582 |                  0.2401 |
-|  8192 |                   0.0033 |                      0 |                    0.0022 |                  0.0132 |
+|  8192 |                   0.0033 |                 0.0 |                    0.0022 |                  0.0132 |
 
 
 #### Input Context Length Stats
@@ -133,7 +133,7 @@ As mentioned previously, we truncate and modify the documents to have different 
 
 ##### FFQA
 |               | **Mean Context Length** | **Max Context Length** |
-|---------------|-------------------------|------------------------|
+|---------------:|-------------------------:|------------------------:|
 |  ffqa_2k.json |                 1936.71 |                   3228 |
 |  ffqa_4k.json |                 3805.06 |                   5793 |
 |  ffqa_8k.json |                 7598.98 |                   9963 |
@@ -141,7 +141,7 @@ As mentioned previously, we truncate and modify the documents to have different 
 
 ##### AltQA
 |                | **Mean Context Length** | **Max Context Length** |
-|----------------|-------------------------|------------------------|
+|----------------:|-------------------------:|------------------------:|
 |  altqa_2k.json |                 1953.73 |                   2698 |
 |  altqa_4k.json |                 3737.39 |                   5172 |
 |  altqa_8k.json |                 7481.37 |                   9619 |
