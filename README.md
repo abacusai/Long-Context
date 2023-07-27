@@ -46,7 +46,7 @@ In addition, we looked at the log loss of the train and eval sets during
 
 For the LMSys task, we generated new and longer testcases, up to a context length of about 25000, beyond the 16000 context testcases in the original dataset.
 
-The [WikiQA](./datasets/WikiQA) task is the task of answering a question based on the information given in a Wikipedia document. We have built upon the short answer format data in [Google Natural Questions](https://github.com/google-research-datasets/natural-questions/tree/master) to construct our QA task. It is formatted as a document and a question. We ensure the answer to the question is a short answer which is either a single word or a small sentence directly cut pasted from the document. Having the task structured as such, we can pinpoint exactly where the LLM was supposed to "look" for the answer in the context, and thus effectively evaluate every part of the expanded context length by carefully placing the answer in different locations. 
+The **WikiQA** task is the task of answering a question based on the information given in a Wikipedia document. We have built upon the short answer format data in [Google Natural Questions](https://github.com/google-research-datasets/natural-questions/tree/master) to construct our QA task. It is formatted as a document and a question. We ensure the answer to the question is a short answer which is either a single word or a small sentence directly cut pasted from the document. Having the task structured as such, we can pinpoint exactly where the LLM was supposed to "look" for the answer in the context, and thus effectively evaluate every part of the expanded context length by carefully placing the answer in different locations. 
 
 We have selected large Wikipedia documents and have truncated them to get multiple versions of the same document with sizes varying between 2000 to 16000 tokens. For each size of the document, we also have multiple versions which place the question and the answer text at different locations i.e whether it occurs in the first 10%, the bulk or last 10% of the document. Having multiple version of the same document allows us to get a exhaustive and fair evaluation across model sizes, and within one model's context positions since we intrinsically are asking for the same information.
 
@@ -54,7 +54,7 @@ A potential issue in a Wikipedia based dataset is that the model could perhaps c
 - If the answer is a year, which is quite frequent, (i.e. is between 1000-2100), we change it to a different random value within +/- 10 of the original value. We treat years as a special case so as to not make the interpretation of the document absurd by messing up choronological information 
 - If the answer is any other number, we change it to a different random number which has the same number of digits
 
-We call our original QA task [Free Form QA (FFQA)](./datasets/WikiQA/Free_Form_QA) and the altered task [Altered Numeric QA (AltQA)](./datasets/WikiQA/Altered_Numeric_QA). 
+We call our original QA task [Free Form QA (FFQA)](https://huggingface.co/datasets/abacusai/WikiQA-Free_Form_QA) and the altered task [Altered Numeric QA (AltQA)](https://huggingface.co/datasets/abacusai/WikiQA-Altered_Numeric_QA). 
 
 We evaluate success on every example in both versions of our QA task by measuring "Presence Accuracy" i.e, whether or not the answer is present as a subtring in the model's generated answer. To run inference for our models on WikiQA and compute metrics refer to `run_inference_WikiQA.py` and `compute_metrics_WikiQA.ipynb` [here](./python/eval/longeval)
 
@@ -122,10 +122,9 @@ Presence Accuracy:
 
 |       | IFT with Scale=4 on FFQA | IFT No scaling on FFQA | IFT with Scale=4 on AltQA | IFT No scaling on AltQA |
 |-------|--------------------------|------------------------|---------------------------|-------------------------|
-|  2048 |             0.3233333333 |           0.2216666667 |              0.7280701754 |             0.298245614 |
-|  4096 |             0.3783333333 |           0.2466666667 |               0.701754386 |            0.2828947368 |
-|  8192 |             0.4433962264 |           0.2405660377 |              0.6581920904 |            0.2401129944 |
-
+|  2048 |                   0.3233 |                 0.2217 |                    0.7281 |                  0.2982 |
+|  4096 |                   0.3783 |                 0.2467 |                    0.7018 |                  0.2829 |
+|  8192 |                   0.4434 |                 0.2406 |                    0.6582 |                  0.2401 |
 
 #### Input Context Length Stats
 As mentioned previously, we truncate and modify the documents to have different version of the WikiQA data. Each version is meant to extensively test the model's performance upto and at a certain context length as indicated by the version name
@@ -133,18 +132,18 @@ As mentioned previously, we truncate and modify the documents to have different 
 ##### FFQA
 |               | **Mean Context Length** | **Max Context Length** |
 |---------------|-------------------------|------------------------|
-|  ffqa_2k.json |             1936.713333 |                   3228 |
+|  ffqa_2k.json |                 1936.71 |                   3228 |
 |  ffqa_4k.json |                 3805.06 |                   5793 |
-|  ffqa_8k.json |             7598.983333 |                   9963 |
+|  ffqa_8k.json |                 7598.98 |                   9963 |
 | ffqa_16k.json |                15000.54 |                  16178 |
 
 ##### AltQA
 |                | **Mean Context Length** | **Max Context Length** |
 |----------------|-------------------------|------------------------|
-|  altqa_2k.json |             1953.732456 |                   2698 |
-|  altqa_4k.json |             3737.385965 |                   5172 |
-|  altqa_8k.json |             7481.368421 |                   9619 |
-| altqa_16k.json |              15013.4386 |                  16173 |
+|  altqa_2k.json |                 1953.73 |                   2698 |
+|  altqa_4k.json |                 3737.39 |                   5172 |
+|  altqa_8k.json |                 7481.37 |                   9619 |
+| altqa_16k.json |                15013.44 |                  16173 |
 
 #### Performance Robust to Increasing Context Length
 
