@@ -6,7 +6,7 @@ An area that has been interesting to us and others in the community recently is 
 
 We have conducted a range of experiments with different schemes for extending context length capabilities of Llama, which has been pretrained on 2048 context length with the RoPE (Rotary Position Embedding) encoding. Here we share some of the results as well as the training and evaluation scripts in the hope that it will be useful to the community. For our best performing models - linear scaling with IFT at scales 4 and 16 - we are also sharing the weights in case others wish to use them, or to conduct their own tests. We believe the scale 16 model should perform well on real world tasks up to 16k context lengths, and potentially even up to about 20-24k context lengths.
 
-[Scale 16 model](https://huggingface.co/abacusai/LongContext-Llama-v1-13b-delta-scaled-16)
+[Scale 16 model](https://huggingface.co/abacusai/Giraffe-v1-delta-13b-scaled-16)
 
 ## Overview
 
