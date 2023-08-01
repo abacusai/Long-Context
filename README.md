@@ -120,12 +120,14 @@ receive finetuning at that expanded scale.
 
 Presence Accuracy: 
 
-|       | IFT with Scale=4 on FFQA | IFT No scaling on FFQA | IFT with Scale=4 on AltQA | IFT No scaling on AltQA |
-|-------:|--------------------------:|------------------------:|---------------------------:|-------------------------:|
-|  2048 |                   0.3233 |                 0.2217 |                    0.7281 |                  0.2982 |
-|  4096 |                   0.3783 |                 0.2467 |                    0.7018 |                  0.2829 |
-|  8192 |                   0.4434 |                 0.2406 |                    0.6582 |                  0.2401 |
-| 16384 |                   0.0033 |                 0.0    |                    0.0022 |                  0.0132 |
+|Context Length | IFT with Scale=4 on FFQA | IFT No scaling on FFQA | IFT with Scale=4 on AltQA | IFT No scaling on AltQA |
+|--------------:|-------------------------:|-----------------------:|--------------------------:|------------------------:|
+|          2048 |                   0.3233 |                 0.2217 |                    0.7281 |                  0.2982 |
+|          4096 |                   0.3783 |                 0.2467 |                    0.7018 |                  0.2829 |
+|          8192 |                   0.4434 |                 0.2406 |                    0.6582 |                  0.2401 |
+|         16384 |                   0.3933 |                 0.0    |                    0.5363 |                  0.0    |
+
+Note: For 16k context length, we use a scale factor of 8 during inference. This enables expanding the original 2k context to 2*8=16k. It is interesting to point out that even though the scaled model was trained with a scale factor of 4, it can zero-shot interpolate to 16k (a scale of 8) during inference without losing too much performance. This however does not hold in the non-scaled models as is evident from the drop in accracy to 0 on the 16k datapoints. Indicating that our scaling and context length interpolation does work.
 
 
 #### Input Context Length Stats
