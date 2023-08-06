@@ -161,7 +161,7 @@ As is seen above, our technique of finetuning interpolated embeddings seems to g
 
 ![Impact of Scaling Context AltQA](https://docs.google.com/spreadsheets/d/e/2PACX-1vR1CTMLar9CqXxlQAKXAoDhwjMdz9A00jd3RZtcpur5xB6TBgC6g4UGcE4-W4J8u99DedYDQln9a9Zk/pubchart?oid=814673539&format=image)
 
-We contrast models instruct finetuned with and without scale context to show that IFT with scaled context leads to a significant jump in performance. Note that for both models, we still use a scaled context (=4) during evaluation. Interestingly, even zero shot performance of the scaled RoPE embedding gives non-trivial accuracy. However, having the embeddings explictly finetuned does have considerable gains. We see almost a 2x improvement on FFQA and a 2.5x improvement on AltQA at all positions interpolated by the scale context factor 
+We contrast models instruct finetuned with and without scale context to show that IFT with scaled context leads to a significant jump in performance. Note that for both models, we still use a scaled context (=4) during evaluation. Interestingly, even zero shot performance of the scaled RoPE embedding gives non-trivial accuracy. However, having the embeddings explicitly finetuned does have considerable gains. We see almost a 2x improvement on FFQA and a 2.5x improvement on AltQA at all positions interpolated by the scale context factor 
 
 #### Location of Information
 
