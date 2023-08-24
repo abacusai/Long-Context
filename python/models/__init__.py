@@ -9,16 +9,39 @@ def add_posembed_args(parser):
     return parser
 
 
-def load_model(base_model, delta_model, **patch_args):
+def load_model(base_model_path: str, delta_model_path: str = None, **patch_args):
+    '''Helper to load a model and patch it to support a longer context.
+    
+    For example to load Giraffe V2 with its trained scale:
+    ```python
+    model = load_model('abacusai/Giraffe-v2-13b-32k', scale=8)
+    ```
+
+    To load a delta model you need the original llama v1 weights available:
+    ```python
+    model = load_model('abacusai/Giraffe-v1-delta-13b-scaled-4', 'path/to/llama-13b', scale=4)
+
+    See `ScaledLlamaRotaryEmbedding.patch` for information on additional arguments.
+    '''
     import torch
     from transformers import AutoModelForCausalLM
-    base_model = AutoModelForCausalLM.from_config(base_model, torch_dtype=torch.float16)
-    delta_model = AutoModelForCausalLM.from_config(delta_model, torch_dtype=torch.float16)
-    for name, param in base_model.named_parameters():
-        delta_param = delta_model.get_parameter(name)
-        assert delta_param.shape == param.shape
-        delta_param += param
+    base_model = AutoModelForCausalLM.from_config(base_model_path, torch_dtype=torch.float16)
+    if delta_model_path is not None:
+        delta_model = AutoModelForCausalLM.from_config(delta_model_path, torch_dtype=torch.float16)
+        for name, param in base_model.named_parameters():
+            delta_param = delta_model.get_parameter(name)
+            assert delta_param.shape == param.shape
+            delta_param += param
 
     from interpolate import ScaledLlamaRotaryEmbedding
     ScaledLlamaRotaryEmbedding.patch(delta_model, **patch_args)
     return delta_model
+
+
+def load_tokenizer(tokenizer_path = 'abacusai/Giraffe-v1-Tokenizer'):
+    '''Load the tokenizer used for fine-tuning Giraffe models.
+    For consistency, as of this time Giraffe models are fine-tuned with a Llama V1 tokenizer setup.
+    Note: Future releases will upgrade to the Llama V2 tokenizer.
+    '''
+    from transformers import AutoTokenizer
+    return AutoTokenizer.from_pretrained(tokenizer_path, use_fast=False)
