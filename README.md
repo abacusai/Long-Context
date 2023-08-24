@@ -8,6 +8,8 @@ We have conducted a range of experiments with different schemes for extending co
 
 [Scale 16 model](https://huggingface.co/abacusai/Giraffe-v1-delta-13b-scaled-16)
 
+[Technical Paper](http://arxiv.org/abs/2308.10882)
+
 ## Overview
 
 We conducted a wide variety of experiments to try to extend the context length of the models. First, we tried simply using the base Llama model zero-shot. As expected, this performed well up to 2048 context length but deterioriated very rapidly afterwards.
