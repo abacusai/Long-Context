@@ -131,6 +131,29 @@ Presence Accuracy:
 
 Note: For 16k context length, we use a scale factor of 8 during inference. This enables expanding the original 2k context to 2*8=16k. It is interesting to point out that even though the scaled model was trained with a scale factor of 4, it can zero-shot interpolate to 16k (a scale of 8) during inference without losing too much performance. This however does not hold in the non-scaled models as is evident from the drop in accracy to 0 on the 16k datapoints. Indicating that our scaling and context length interpolation does work.
 
+#### Model Evaluations:
+
+#### AltQA
+| Context Length | Llama 1 |  Llama 1 |  Llama 1 | Llama 2 | Llama 2 70B | LongChat 32k |
+| --- | --- | --- | --- | --- | --- | --- |
+| | Linear Scaling (x4) | Linear Scaling (x16) | Truncated Basis | Linear Scaling (x8) | Linear Scaling (x8) | |
+| 2k | 0.72 | 0.69 | 0.74 | 0.72 |  | 0.73 |
+| 4k | 0.72 | 0.73 | 0.73 | 0.76 | 0.78 | 0.76 |
+| 8k | 0.62 | 0.7 | 0.46 | 0.71 | 0.72 | 0.74 |
+| 16k | 0.65 | 0.68 | 0 | 0.59 | 0.75 | |
+| 24k | 0.46 | 0.56 | 0 | 0.36 | | |
+| 32k | 0.32 | 0.18 | 0 | 0.15 | 0.61 | |
+
+#### FFQA
+| Context Length | Llama 1 |  Llama 1 |  Llama 1 | Llama 2 | Llama 2 70B | LongChat 32k |
+| --- | --- | --- | --- | --- | --- | --- |
+| | Linear Scaling (x4) | Linear Scaling (x16) | Truncated Basis | Linear Scaling (x8) | Linear Scaling (x8) | |
+| 2k | 0.44 | 0.47 | 0.46 | 0.56 |  | 0.52 |
+| 4k | 0.49 | 0.44 | 0.55 | 0.55 | 0.59 | 0.56 |
+| 8k | 0.46 | 0.45 | 0.36 | 0.56 | 0.56 | 0.57 |
+| 16k | 0.51 | 0.48 | 0 | 0.44 | 0.58 | |
+| 24k | 0.24 | 0.42 | 0 | 0.28 | | |
+| 32k | 0.21 | 0.2 | 0 | 0.1 | 0.4 | |
 
 #### Input Context Length Stats
 As mentioned previously, we truncate and modify the documents to have different version of the WikiQA data. Each version is meant to extensively test the model's performance upto and at a certain context length as indicated by the version name
