@@ -25,7 +25,6 @@ from torch.nn import CrossEntropyLoss
 from transformers.activations import ACT2FN
 from transformers.modeling_outputs import BaseModelOutputWithPast, CausalLMOutputWithPast
 from transformers.modeling_utils import PreTrainedModel
-from transformers.models.llama.configuration_llama import LlamaConfig
 from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS
 from transformers.utils import (
     add_start_docstrings, add_start_docstrings_to_model_forward,
@@ -40,7 +39,7 @@ if is_flash_attn_2_available():
 
 logger = logging.get_logger(__name__)
 
-_CONFIG_FOR_DOC = "LlamaConfig"
+_CONFIG_FOR_DOC = "GiraffeConfig"
 
 
 def _get_unpad_data(attention_mask):
@@ -358,7 +357,7 @@ def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
 class GiraffeAttention(nn.Module):
     """GiraffeAttention is equivalent to LlamaAttention."""
 
-    def __init__(self, config: LlamaConfig):
+    def __init__(self, config):
         super().__init__()
         self.config = config
         self.hidden_size = config.hidden_size
@@ -705,7 +704,7 @@ class GiraffeFlashAttention2(GiraffeAttention):
 
 class GiraffeDecoderLayer(nn.Module):
     """GiraffeDecoderLayer is equivalent to LlamaDecoderLayer."""
-    def __init__(self, config: LlamaConfig):
+    def __init__(self, config):
         super().__init__()
         self.hidden_size = config.hidden_size
         self.self_attn = (
@@ -788,7 +787,7 @@ GIRAFFE_START_DOCSTRING = r"""
     and behavior.
 
     Parameters:
-        config ([`LlamaConfig`]):
+        config ([`GiraffeConfig`]):
             Model configuration class with all the parameters of the model. Initializing with a config file does not
             load the weights associated with the model, only the configuration. Check out the
             [`~PreTrainedModel.from_pretrained`] method to load the model weights.
@@ -800,7 +799,6 @@ GIRAFFE_START_DOCSTRING = r"""
     GIRAFFE_START_DOCSTRING,
 )
 class GiraffePreTrainedModel(PreTrainedModel):
-    config_class = LlamaConfig
     base_model_prefix = "model"
     supports_gradient_checkpointing = True
     _no_split_modules = ["LlamaDecoderLayer"]
@@ -925,10 +923,10 @@ class GiraffeModel(GiraffePreTrainedModel):
     Transformer decoder consisting of *config.num_hidden_layers* layers. Each layer is a [`LlamaDecoderLayer`]
 
     Args:
-        config: LlamaConfig
+        config: GiraffeConfig
     """
 
-    def __init__(self, config: LlamaConfig):
+    def __init__(self, config):
         super().__init__(config)
         self.padding_idx = config.pad_token_id
         self.vocab_size = config.vocab_size
@@ -1103,7 +1101,7 @@ class GiraffeModel(GiraffePreTrainedModel):
         )
 
 
-class GiraffeForCausalLM(GiraffePreTrainedModel):
+class GiraffeModelForCausalLM(GiraffePreTrainedModel):
     _tied_weights_keys = ["lm_head.weight"]
 
     def __init__(self, config):
