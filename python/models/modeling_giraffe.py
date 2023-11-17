@@ -25,6 +25,7 @@ from torch.nn import CrossEntropyLoss
 from transformers.activations import ACT2FN
 from transformers.modeling_outputs import BaseModelOutputWithPast, CausalLMOutputWithPast
 from transformers.modeling_utils import PreTrainedModel
+from transformers.models.llama.configuration_llama import LlamaConfig
 from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS
 from transformers.utils import (
     add_start_docstrings, add_start_docstrings_to_model_forward,
@@ -39,7 +40,7 @@ if is_flash_attn_2_available():
 
 logger = logging.get_logger(__name__)
 
-_CONFIG_FOR_DOC = "GiraffeConfig"
+_CONFIG_FOR_DOC = "LlamaConfig"
 
 
 def _get_unpad_data(attention_mask):
@@ -309,7 +310,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, position_ids):
 
 class GiraffeMLP(nn.Module):
     """GiraffeMLP is equivalent to LlamaMLP."""
-    def __init__(self, config):
+    def __init__(self, config: LlamaConfig):
         super().__init__()
         self.config = config
         self.hidden_size = config.hidden_size
@@ -357,7 +358,7 @@ def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
 class GiraffeAttention(nn.Module):
     """GiraffeAttention is equivalent to LlamaAttention."""
 
-    def __init__(self, config):
+    def __init__(self, config: LlamaConfig):
         super().__init__()
         self.config = config
         self.hidden_size = config.hidden_size
@@ -704,7 +705,7 @@ class GiraffeFlashAttention2(GiraffeAttention):
 
 class GiraffeDecoderLayer(nn.Module):
     """GiraffeDecoderLayer is equivalent to LlamaDecoderLayer."""
-    def __init__(self, config):
+    def __init__(self, config: LlamaConfig):
         super().__init__()
         self.hidden_size = config.hidden_size
         self.self_attn = (
@@ -764,6 +765,7 @@ class GiraffeDecoderLayer(nn.Module):
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
         hidden_states = self.mlp(hidden_states)
+        residual = residual.to(hidden_states.device)
         hidden_states = residual + hidden_states
 
         outputs = (hidden_states,)
@@ -799,6 +801,7 @@ GIRAFFE_START_DOCSTRING = r"""
     GIRAFFE_START_DOCSTRING,
 )
 class GiraffePreTrainedModel(PreTrainedModel):
+    config_class = LlamaConfig
     base_model_prefix = "model"
     supports_gradient_checkpointing = True
     _no_split_modules = ["LlamaDecoderLayer"]
@@ -923,10 +926,10 @@ class GiraffeModel(GiraffePreTrainedModel):
     Transformer decoder consisting of *config.num_hidden_layers* layers. Each layer is a [`LlamaDecoderLayer`]
 
     Args:
-        config: GiraffeConfig
+        config: LlamaConfig
     """
 
-    def __init__(self, config):
+    def __init__(self, config: LlamaConfig):
         super().__init__(config)
         self.padding_idx = config.pad_token_id
         self.vocab_size = config.vocab_size
